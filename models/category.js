@@ -3,10 +3,6 @@ const connection = require("../utils/database")
 
 
 const categorySchema = new mongoose.Schema({
-    categoryCode: {
-        type: String,
-        required: true
-    },
     category: {
         type: String,
         required: true
