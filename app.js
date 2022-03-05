@@ -6,6 +6,7 @@ var session = require("express-session");
 var userRoutes =require('./routes/user');
 var adminRoutes =require('./routes/admin')
 var categoryRoutes =require('./routes/category')
+var subCategoryRoutes =require('./routes/subCategory')
 var productRoutes =require('./routes/product')
 
 require("dotenv").config();
@@ -35,6 +36,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/',userRoutes);
 app.use('/admin',adminRoutes);
 app.use('/category',categoryRoutes);
+app.use('/subCategory',subCategoryRoutes);
 app.use('/product',productRoutes);
 
 
