@@ -7,6 +7,7 @@ var userRoutes =require('./routes/user');
 var adminRoutes =require('./routes/admin')
 var categoryRoutes =require('./routes/category')
 var subCategoryRoutes =require('./routes/subCategory')
+var typeRoutes =require('./routes/type')
 var productRoutes =require('./routes/product')
 
 require("dotenv").config();
@@ -37,6 +38,7 @@ app.use('/',userRoutes);
 app.use('/admin',adminRoutes);
 app.use('/category',categoryRoutes);
 app.use('/subCategory',subCategoryRoutes);
+app.use('/type',typeRoutes);
 app.use('/product',productRoutes);
 
 
