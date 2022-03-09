@@ -51,15 +51,35 @@ module.exports = {
      },
 
      deleteProduct: async (req, res) => {
+          console.log("controller");
           try {
                console.log(req.body);
 
-               await Product.remove({ _id: objectId(req.body._id) });
+               await Product.deleteOne({ _id: objectId(req.body._id) });
                const productData = await Product.find({});
                return res.status(200).json({ message: "product Deleted", productData });
           } catch (error) {
                console.log(error.message);
                res.status(500).json({ message: "something went wrong" });
+          }
+     },
+     addImage: async (req, res) => {
+          console.log("started controller");
+          console.log(req.body);
+          try {
+               const ModelNumberData = await Product.findOne({ ModelNumber: req.body.ModelNumber });
+               const ProductNameData = await Product.findOne({ ProductName: req.body.ProductName });
+
+               if (ModelNumberData) return res.status(400).json({ message: "This Model Number Is Already Exist" });
+               if (ProductNameData) return res.status(400).json({ message: "This Product Name Is Already Exist" });
+
+               const newProduct = await Product.create(req.body);
+               const allProduct = await Product.find();
+
+               return res.status(200).json({ message: " Product Created Successfully", allProduct });
+          } catch (error) {
+               console.log(error.message);
+               return res.status(500).json({ message: "something went wrong" });
           }
      },
 };

@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
 
-const {addProduct,getProduct} =require('../controllers/product')
+const {addProduct,getProduct,deleteProduct} =require('../controllers/product')
 
 //middleware
 
@@ -9,6 +9,8 @@ const {addProduct,getProduct} =require('../controllers/product')
 //api routes
 
 router.post("/add",addProduct);
+router.get("/get",getProduct);
+router.post("/delete",deleteProduct);
 router.get("/get",getProduct);
 
 
