@@ -63,18 +63,20 @@ module.exports = {
                res.status(500).json({ message: "something went wrong" });
           }
      },
+
+
      addImage: async (req, res) => {
           console.log("started controller");
           console.log(req.body);
           try {
-               const ModelNumberData = await Product.findOne({ ModelNumber: req.body.ModelNumber });
-               const ProductNameData = await Product.findOne({ ProductName: req.body.ProductName });
+              // const product = await Product.findOne({ _id:objectId(req.body._id) });
+               
 
-               if (ModelNumberData) return res.status(400).json({ message: "This Model Number Is Already Exist" });
-               if (ProductNameData) return res.status(400).json({ message: "This Product Name Is Already Exist" });
+               //if (!product) return res.status(400).json({ message: "Product Not Exist" });
+             
 
-               const newProduct = await Product.create(req.body);
-               const allProduct = await Product.find();
+               //const updateProduct = await Product.create(req.body);
+              // const allProduct = await Product.find();
 
                return res.status(200).json({ message: " Product Created Successfully", allProduct });
           } catch (error) {
