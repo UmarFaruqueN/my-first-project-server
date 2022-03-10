@@ -2,24 +2,27 @@ const Product = require("../models/product");
 const Category = require("../models/category");
 const SubCategory = require("../models/subCategory");
 const Type = require("../models/type");
-var objectId = require("mongodb").ObjectId;
+const ObjectId = require("mongodb").ObjectId;
+const cloudinary = require("../utils/clounidary");
 
 module.exports = {
      addProduct: async (req, res) => {
           console.log("started controller");
-          console.log(req.body);
           try {
                const ModelNumberData = await Product.findOne({ ModelNumber: req.body.ModelNumber });
                const ProductNameData = await Product.findOne({ ProductName: req.body.ProductName });
+               console.log(ProductNameData);
 
                if (ModelNumberData) return res.status(400).json({ message: "This Model Number Is Already Exist" });
                if (ProductNameData) return res.status(400).json({ message: "This Product Name Is Already Exist" });
 
                const newProduct = await Product.create(req.body);
-               const allProduct = await Product.find();
 
-               return res.status(200).json({ message: " Product Created Successfully", allProduct });
+               const allProduct = await Product.find();
+               return res.status(200).json({ message: " Product Created Successfully", allProduct, newProduct });
           } catch (error) {
+               console.log("ADDAYI BUT ENTHAROO KOYAPPAM");
+               console.log(error);
                console.log(error.message);
                return res.status(500).json({ message: "something went wrong" });
           }
@@ -55,7 +58,7 @@ module.exports = {
           try {
                console.log(req.body);
 
-               await Product.deleteOne({ _id: objectId(req.body._id) });
+               await Product.deleteOne({ _id: ObjectId(req.body._id) });
                const productData = await Product.find({});
                return res.status(200).json({ message: "product Deleted", productData });
           } catch (error) {
@@ -64,23 +67,49 @@ module.exports = {
           }
      },
 
-
      addImage: async (req, res) => {
           console.log("started controller");
-          console.log(req.body);
+
+          console.log(req.files[0]);
+
           try {
-              // const product = await Product.findOne({ _id:objectId(req.body._id) });
-               
+               console.log("started try");
+               const data = await JSON.parse(req.body.data);
+               console.log(data);
+               const product = await Product.findOne({ _id: ObjectId(data._id) });
 
-               //if (!product) return res.status(400).json({ message: "Product Not Exist" });
-             
+               console.log(product);
 
-               //const updateProduct = await Product.create(req.body);
-              // const allProduct = await Product.find();
+               if (!product) {
+                    return res.status(500).json({ message: "No Product Found" });
+               }
+               console.log(req.files[0].path);
+               const img1 = await cloudinary.uploader.upload(req.files[0].path);
+               const img2 = await cloudinary.uploader.upload(req.files[1].path);
+               const img3 = await cloudinary.uploader.upload(req.files[2].path);
+               const img4 = await cloudinary.uploader.upload(req.files[3].path);
+
+               const addImages = await Product.findByIdAndUpdate(
+                    { _id: ObjectId(data._id) },
+                    {
+                         $set: {
+                              Image1: img1.secure_url,
+                              Image1id: img1.public_id,
+                              Image2: img2.secure_url,
+                              Image2id: img2.public_id,
+                              Image3: img3.secure_url,
+                              Image3id: img3.public_id,
+                              Image4: img4.secure_url,
+                              Image4id: img4.public_id,
+                         },
+                    }
+               );
+
+               const allProduct = await Product.find();
 
                return res.status(200).json({ message: " Product Created Successfully", allProduct });
           } catch (error) {
-               console.log(error.message);
+               console.log(error.message + "entho error");
                return res.status(500).json({ message: "something went wrong" });
           }
      },

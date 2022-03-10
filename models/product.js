@@ -61,10 +61,30 @@ const productSchema = new mongoose.Schema({
      },
      Customers: {
           type: Array,
-        
      },
-     Images: {
-          type: Array,
+     Image1: {
+          type: String,
+     },
+     Image1id: {
+          type: String,
+     },
+     Image2: {
+          type: String,
+     },
+     Image2id: {
+          type: String,
+     },
+     Image3: {
+          type: String,
+     },
+     Image3id: {
+          type: String,
+     },
+     Image4: {
+          type: String,
+     },
+     Image4id: {
+          type: String,
      },
      rating: {
           type: Array,

@@ -60,7 +60,7 @@ module.exports = {
           try {
                console.log(req.body);
 
-               await SubCategory.remove({ _id: ObjectId(req.body._id) });
+               await SubCategory.deleteOne({ _id: ObjectId(req.body._id) });
                const subCategoryData = await SubCategory.find({});
                return res.status(200).json({ message: "subCategory Deleted", subCategoryData });
           } catch (error) {
