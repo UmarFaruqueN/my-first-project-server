@@ -27,8 +27,8 @@ module.exports = {
                return res.status(500).json({ message: "something went wrong" });
           }
      },
-     getProduct: async (req, res) => {
-          console.log("on controller");
+     getAllProduct: async (req, res) => {
+          console.log("on controller all");
           try {
                const allProduct = await Product.find();
                const allCategory = await Category.find();
@@ -43,6 +43,24 @@ module.exports = {
                          allCategory,
                          allSubCategory,
                          allType,
+                    });
+               } else {
+                    return res.status(500).json({ message: "didnt got Product from database" });
+               }
+          } catch (error) {
+               console.log(error.message);
+               res.status(500).json({ message: "something went wrong" });
+          }
+     },
+     getProduct: async (req, res) => {
+          console.log("on controller");
+          try {
+               const oneProduct = await Product.findOne({ _id: ObjectId(req.body._id) });
+               if (oneProduct) {
+                    // console.log(ProductData[0]);
+                    res.status(200).json({
+                         message: " Product Fetched Successfully",
+                         oneProduct,
                     });
                } else {
                     return res.status(500).json({ message: "didnt got Product from database" });

@@ -6,18 +6,23 @@ const ObjectId = require("mongodb").ObjectId;
 module.exports = {
      addToCart: async (req, res) => {
           console.log("started  cart controller");
+          const productId = req.body._id;
           try {
-               const product = await Product.findOne({ _id: ObjectId(req.body._id) });
                const user = await User.findOne({ _id: ObjectId(req.body.user) });
-               if (product && user) {
-                    const cartData = await Cart.create(req.body);
-                    const updateProduct = await Product.findOneAndUpdate(
-                         { _id: ObjectId(req.body._id) },
-                         { $inc: { Stock: -1 } }
+               const product = await Product.findOne({ _id: ObjectId(req.body._id) });
+               if (user && product) {
+                    const cartUpdateUser = await User.findOneAndUpdate(
+                         { _id: ObjectId(req.body.user) },
+                         {
+                              $push: {
+                                   cart: req.body,
+                              },
+                         }
                     );
-                    const allProduct = await Product.find();
-                    const allCart = await Cart.find({user:req.body.user });
-                    return res.status(200).json({ message: " Product Added to Cart", allProduct, allCart });
+
+                    console.log(cartUpdateUser);
+
+                    return res.status(200).json({ message: " Product Added to Cart", cartUpdateUser });
                }
           } catch (error) {
                console.log("ADDAYI BUT ENTHAROO KOYAPPAM");

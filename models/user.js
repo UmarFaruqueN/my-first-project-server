@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         required: true
         
+    },
+    cart:{
+        type:Array,
+        required:true
     }
 }
 )
