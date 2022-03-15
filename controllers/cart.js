@@ -6,24 +6,45 @@ const ObjectId = require("mongodb").ObjectId;
 module.exports = {
      addToCart: async (req, res) => {
           console.log("started  cart controller");
-          const productId = req.body._id;
+          console.log(req.body);
           try {
-               const user = await User.findOne({ _id: ObjectId(req.body.user) });
-               const product = await Product.findOne({ _id: ObjectId(req.body._id) });
-               if (user && product) {
-                    const cartUpdateUser = await User.findOneAndUpdate(
-                         { _id: ObjectId(req.body.user) },
-                         {
-                              $push: {
-                                   cart: req.body,
-                              },
-                         }
+               const cart = await Cart.findOne({ user: req.body.user });
+               if (cart) {
+                    const product = await Cart.findOne({
+                         user: req.body.user,
+                         products: { $elemMatch: { productId: req.body._id } },
+                    });
+                    if (product) {
+                         const updateCount = await Cart.findOneAndUpdate(
+                              { user: req.body.user, products: { $elemMatch: { productId: req.body._id } } },
+                              { $inc: { "products.count": req.body.count } }
+                         );
+                         const cartData = await Cart.findOne({ user: req.body.user });
+                         return res.status(200).json({ message: " Cart Updated SuccessFull", cartData });
+                    }
+                    const addProduct = await Cart.findOneAndUpdate(
+                         { user: req.body.user },
+                         { $push: { productId: req.body._id, count: req.body.count } }
                     );
-
-                    console.log(cartUpdateUser);
-
-                    return res.status(200).json({ message: " Product Added to Cart", cartUpdateUser });
+                    if (addProduct) {
+                         const cartData = await Cart.findOne({ user: req.body.user });
+                         return res.status(200).json({ message: " Product Added Cart  SuccessFull", cartData });
+                    }
                }
+
+               const newCart = await Cart.create({
+                    user: req.body.user,
+                    products: [
+                         {
+                              productId: req.body._id,
+                              count: req.body.count,
+                         },
+                    ],
+               });
+
+               const cartData = await Cart.findOne({ user: req.body.user });
+
+               return res.status(200).json({ message: "  New Product Added Cart  SuccessFull", cartData });
           } catch (error) {
                console.log("ADDAYI BUT ENTHAROO KOYAPPAM");
                console.log(error);
