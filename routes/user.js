@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router();
 
 const {userSignup,mobileLogin,otpLogin} =require('../controllers/user')
-const {addToCart} =require("../controllers/cart")
+const {addToCart,getCart,incCart,decCart} =require("../controllers/cart")
 
 //middleware
 
@@ -10,8 +10,11 @@ const {addToCart} =require("../controllers/cart")
 //api routes
 router.post("/userSignup",userSignup);
 router.post("/mobile",mobileLogin)
-router.post("/otp",otpLogin)
+router.post("/otp",otpLogin)    
 router.post("/addToCart",addToCart)
+router.post("/getCart",getCart)
+// router.post("/incCart",incCart)
+// router.post("/decCart",decCart)
 
 
 
