@@ -7,20 +7,32 @@ module.exports = {
      getCart: async (req, res) => {
           console.log("started");
           try {
-               const cartData = await Cart.aggregate([{$match:{user:{$eq:req.body.user}}},
+               let cartData = await Cart.aggregate([
+                    { $match: { user: { $eq: req.body.user } } },
                     {
                          $lookup: {
-                              from: 'products',
-                              localField: 'products.productId',
-                              foreignField: '_id',
-                              as: 'productDetail',
+                              from: "products",
+                              localField: "products.productId",
+                              foreignField: "_id",
+                              as: "productDetail",
                          },
-                    },
+                    }
+                        
                ]);
-               if (cartData.length) {
 
-                    return res.status(200).json({ message: " Cart Updated SuccessFull", cartData,});
+               console.log(cartData);
+               if (cartData.length) {
+                    for(let i = 0; cartData[0]?.products?.length>i;i++){
+                         for(let j = 0; cartData[0]?.products?.length>j;j++){
+                              if(cartData[0]?.productDetail[i]._id==cartData[0]?.products[j]?.productId)
+                         { cartData[0]?.productDetail[i]?.stock=cartData[0]?.products[j]?.count   }
+                         }
+                    }
+                    console.log(cartData[0].productDetail);
+                    return res.status(200).json({ message: " Cart Updated SuccessFull", cartData });
                }
+
+               return res.status(500).json({ message: "No cart found" });
           } catch (error) {
                console.log(error);
                return res.status(500).json({ message: "something went wrong" });

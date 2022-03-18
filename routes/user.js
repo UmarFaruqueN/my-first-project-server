@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router();
 
 const {userSignup,mobileLogin,otpLogin} =require('../controllers/user')
-const {addToCart,getCart,incCart,decCart} =require("../controllers/cart")
+const {addToCart,getCart} =require("../controllers/cart")
 
 //middleware
 
