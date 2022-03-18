@@ -20,20 +20,22 @@ module.exports = {
                         
                ]);
 
-               console.log(cartData);
-               if (cartData.length) {
-                    for(let i = 0; cartData[0]?.products?.length>i;i++){
-                         for(let j = 0; cartData[0]?.products?.length>j;j++){
-                              if(cartData[0]?.productDetail[i]._id==cartData[0]?.products[j]?.productId)
-                         { cartData[0]?.productDetail[i]?.stock=cartData[0]?.products[j]?.count   }
+               console.log("here");
+               if (cartData) {
+                    for(let i = 0; cartData[0].products.length>i;i++){
+                         for(let j = 0; cartData[0].products.length>j;j++){
+                              console.log(cartData[0].productDetail[i]._id.toString())
+                              console.log(cartData[0].products[j].productId.toString())
+                              if(cartData[0].productDetail[i]._id.toString()===cartData[0].products[j].productId.toString())
+                         { console.log("its fucking true");
+                              cartData[0].productDetail[i].counts=cartData[0].products[j].count }
                          }
                     }
-                    console.log(cartData[0].productDetail);
-                    return res.status(200).json({ message: " Cart Updated SuccessFull", cartData });
+                    return res.status(200).json({ message: "Cart Updated SuccessFull", cartData });
                }
 
                return res.status(500).json({ message: "No cart found" });
-          } catch (error) {
+          } catch (error) {   
                console.log(error);
                return res.status(500).json({ message: "something went wrong" });
           }
