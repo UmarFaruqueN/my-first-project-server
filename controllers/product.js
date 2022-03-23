@@ -19,9 +19,10 @@ module.exports = {
                const newProduct = await Product.create(req.body);
                console.log(newProduct);
 
-               if(newProduct){
-               const allProduct = await Product.find();
-               return res.status(200).json({ message: " Product Created Successfully", allProduct, newProduct });}
+               if (newProduct) {
+                    const allProduct = await Product.find();
+                    return res.status(200).json({ message: " Product Created Successfully", allProduct, newProduct });
+               }
           } catch (error) {
                console.log("ADDAYI BUT ENTHAROO KOYAPPAM");
                console.log(error);
@@ -55,9 +56,11 @@ module.exports = {
           }
      },
      getProduct: async (req, res) => {
-          console.log("on controller");
+          console.log("on controller of one Product");
+          console.log(req.body._id);
           try {
                const oneProduct = await Product.findOne({ _id: ObjectId(req.body._id) });
+
                if (oneProduct) {
                     // console.log(ProductData[0]);
                     res.status(200).json({
@@ -73,6 +76,41 @@ module.exports = {
           }
      },
 
+     updateProduct: async (req, res) => {
+          console.log("update Controler started");
+          console.log(req.body);
+
+          try {
+               const product = await Product.findOneAndUpdate(
+                    { _id: ObjectId(req.body._id) },
+                    {
+                         $set: {
+                              ProductName: req.body.ProductName,
+                              ModelNumber: req.body.ModelNumber,
+                              Category: req.body.Category,
+                              SubCategory: req.body.SubCategory,
+                              Type: req.body.Type,
+                              Stock: req.body.Stock,
+                              LandingCost: req.body.LandingCost,
+                              SellingPrice: req.body.SellingPrice,
+                              Description: req.body.Description,
+                         },
+                    }
+               );
+               console.log(product);
+               if (product) {
+                    res.status(200).json({
+                         message: " Product Updated Successfully",
+                         product,
+                    });
+               } else {
+                    return res.status(500).json({ message: "didnt got Product from database" });
+               }
+          } catch (error) {
+               console.log(error.message);
+               res.status(500).json({ message: "something went wrong" });
+          }
+     },
      deleteProduct: async (req, res) => {
           console.log("controller");
           try {
@@ -94,12 +132,12 @@ module.exports = {
 
           try {
                console.log("started try");
-               console.log(req.body.data+"this");
+               console.log(req.body.data + "this");
                const data = await JSON.parse(req.body.data);
                console.log(data);
-               const product = await Product.findOne({ _id: ObjectId(data)});
+               const product = await Product.findOne({ _id: ObjectId(data) });
 
-               console.log(product +"thus");
+               console.log(product + "thus");
 
                if (!product) {
                     return res.status(500).json({ message: "No Product Found" });
