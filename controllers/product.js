@@ -17,9 +17,11 @@ module.exports = {
                if (ProductNameData) return res.status(400).json({ message: "This Product Name Is Already Exist" });
 
                const newProduct = await Product.create(req.body);
+               console.log(newProduct);
 
+               if(newProduct){
                const allProduct = await Product.find();
-               return res.status(200).json({ message: " Product Created Successfully", allProduct, newProduct });
+               return res.status(200).json({ message: " Product Created Successfully", allProduct, newProduct });}
           } catch (error) {
                console.log("ADDAYI BUT ENTHAROO KOYAPPAM");
                console.log(error);
@@ -92,11 +94,12 @@ module.exports = {
 
           try {
                console.log("started try");
+               console.log(req.body.data+"this");
                const data = await JSON.parse(req.body.data);
                console.log(data);
-               const product = await Product.findOne({ _id: ObjectId(data._id) });
+               const product = await Product.findOne({ _id: ObjectId(data)});
 
-               console.log(product);
+               console.log(product +"thus");
 
                if (!product) {
                     return res.status(500).json({ message: "No Product Found" });
@@ -108,7 +111,7 @@ module.exports = {
                const img4 = await cloudinary.uploader.upload(req.files[3].path);
 
                const addImages = await Product.findByIdAndUpdate(
-                    { _id: ObjectId(data._id) },
+                    { _id: ObjectId(data) },
                     {
                          $set: {
                               Image1: img1.secure_url,
