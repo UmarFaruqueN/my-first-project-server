@@ -9,6 +9,7 @@ var categoryRoutes =require('./routes/category')
 var subCategoryRoutes =require('./routes/subCategory')
 var typeRoutes =require('./routes/type')
 var productRoutes =require('./routes/product')
+var bannerRoutes =require('./routes/banner')
 
 require("dotenv").config();
 
@@ -40,6 +41,7 @@ app.use('/category',categoryRoutes);
 app.use('/subCategory',subCategoryRoutes);
 app.use('/type',typeRoutes);
 app.use('/product',productRoutes);
+app.use('/banner',bannerRoutes);
 
 
 
