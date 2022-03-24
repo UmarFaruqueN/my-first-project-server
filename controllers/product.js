@@ -4,6 +4,7 @@ const SubCategory = require("../models/subCategory");
 const Type = require("../models/type");
 const ObjectId = require("mongodb").ObjectId;
 const cloudinary = require("../utils/clounidary");
+const Banner = require("../models/banner");
 
 module.exports = {
      addProduct: async (req, res) => {
@@ -37,6 +38,7 @@ module.exports = {
                const allCategory = await Category.find();
                const allSubCategory = await SubCategory.find();
                const allType = await Type.find();
+               const allBanner = await Banner.find();
 
                if (allProduct) {
                     // console.log(ProductData[0]);
@@ -46,7 +48,9 @@ module.exports = {
                          allCategory,
                          allSubCategory,
                          allType,
+                         allBanner,
                     });
+
                } else {
                     return res.status(500).json({ message: "didnt got Product from database" });
                }

@@ -33,7 +33,7 @@ module.exports = {
      getBanner: async (req, res) => {
           console.log(req.body.bannerFor+"started getbanner");
           try {
-               const allBanner = await Banner.find({for:req.body.bannerFor});
+               const allBanner = await Banner.find({});
                console.log(allBanner);
                if (allBanner) {
                     return res.status(200).json({ message: " Banner fetched Successfully", allBanner });
