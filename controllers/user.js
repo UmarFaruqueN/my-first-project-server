@@ -25,6 +25,30 @@ module.exports = {
                return res.status(500).json({ message: "something went wrong" });
           }
      },
+
+     userLogin: async (req, res) => {
+          try {
+               console.log(req.body.password);
+               console.log("started try");
+               const user = await User.findOne({ email: req.body.email });
+               if (user) {
+                    const result = await bcrypt.compare(req.body.password, user.password);
+                    console.log(result);
+                    if (result) {
+                         const token = user.generateAuthToken();
+                         console.log(token);
+                         return res.status(200).json({ message: "Login Sucess", token, userName: user.name, userId: user._id, user });             
+                    }
+
+                    return res.status(500).json({ message: "Password Doesnot Match" });
+               }
+               return res.status(500).json({ message: "No User Found" });
+          } catch (error) {
+               console.log(error.message);
+               return res.status(500).json({ message: "something went wrong" });
+          }
+     },
+
      mobileLogin: async (req, res) => {
           console.log(req.body);
           try {
@@ -56,7 +80,9 @@ module.exports = {
                     const user = await User.findOne({ phone: req.body.phone });
                     const token = user.generateAuthToken();
                     console.log(user);
-                    return res.status(200).json({ message: "Login Sucess", token, userName: user.name, userId: user._id });
+                    return res
+                         .status(200)
+                         .json({ message: "Login Sucess", token, userName: user.name, userId: user._id, user });
                } else {
                     return res.status(500).json({ message: "something went wrong" });
                }

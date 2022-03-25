@@ -253,4 +253,15 @@ module.exports = {
                return res.status(500).json({ message: "something went wrong" });
           }
      },
+     getCartCount: async(req, res)=>{
+          try {
+               let cartData = await Cart.aggregate([
+                    { $match: { user: { $eq: req.body.user } } } ,{
+                         
+                    }])
+               
+          } catch (error) {
+               
+          }
+     }
 };
