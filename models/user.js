@@ -28,6 +28,10 @@ const userSchema = new mongoose.Schema({
         type: Array,
         
    },
+   wishlist: {
+    type: Array,
+    
+},
 }
 )
 
