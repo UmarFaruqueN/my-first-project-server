@@ -40,7 +40,6 @@ module.exports = {
                const allSubCategory = await SubCategory.find();
                const allType = await Type.find();
                const allBanner = await Banner.find();
-               const allCart = await Cart.find();
 
                if (allProduct) {
                     // console.log(ProductData[0]);
@@ -51,7 +50,6 @@ module.exports = {
                          allSubCategory,
                          allType,
                          allBanner,
-                         allCart,
                     });
 
                } else {

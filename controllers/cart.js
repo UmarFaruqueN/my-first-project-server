@@ -4,92 +4,41 @@ const User = require("../models/user");
 const ObjectId = require("mongodb").ObjectId;
 
 module.exports = {
-     getCart: async (req, res) => {
-          console.log("started");
-          try {
-               let cartData = await Cart.aggregate([
-                    { $match: { user: { $eq: req.body.user } } },
-                    {
-                         $lookup: {
-                              from: "products",
-                              localField: "products.productId",
-                              foreignField: "_id",
-                              as: "productDetail",
-                         },
-                    },
-               ]);
-
-               console.log("here");
-               if (cartData) {
-                    for (let i = 0; cartData[0].products.length > i; i++) {
-                         for (let j = 0; cartData[0].products.length > j; j++) {
-                              console.log(cartData[0].productDetail[i]._id.toString());
-                              console.log(cartData[0].products[j].productId.toString());
-                              if (
-                                   cartData[0].productDetail[i]._id.toString() ===
-                                   cartData[0].products[j].productId.toString()
-                              ) {
-                                   console.log("its fucking true");
-                                   cartData[0].productDetail[i].counts = cartData[0].products[j].count;
-                                   cartData[0].productDetail[i].id = cartData[0]._id;
-                                   console.log(cartData[0].productDetail[i].id + "updated");
-                              }
-                         }
-                    }
-                    return res.status(200).json({ message: "Cart Updated SuccessFull", cartData });
-               }
-
-               return res.status(500).json({ message: "No cart found" });
-          } catch (error) {
-               console.log(error);
-               return res.status(500).json({ message: "something went wrong" });
-          }
-     },
-
      addToCart: async (req, res) => {
           console.log("started  cart controller");
           console.log(req.body);
+          const data = req.body;
           try {
-               const cart = await Cart.findOne({ user: ObjectId(ObjectId(req.body.user)) });
-               if (cart) {
-                    const product = await Cart.findOne({
-                         user: ObjectId(req.body.user),
-                         products: { $elemMatch: { productId: ObjectId(req.body._id) } },
-                    });
-                    if (product) {
-                         const updateCount = await Cart.findOneAndUpdate(
-                              {
-                                   user: ObjectId(req.body.user),
-                                   products: { $elemMatch: { productId: ObjectId(req.body._id) } },
-                              },
-                              { $inc: { "products.$.count": req.body.count } }
-                         );
-                         const cartData = await Cart.findOne({ user: ObjectId(req.body.user) });
-                         return res.status(200).json({ message: " Cart Updated SuccessFull", cartData });
-                    }
-                    const addProduct = await Cart.findOneAndUpdate(
-                         { user: ObjectId(req.body.user) },
-                         { $push: { products: { productId: ObjectId(req.body._id), count: req.body.count } } }
-                    );
-                    if (addProduct) {
-                         const cartData = await Cart.findOne({ user: ObjectId(req.body.user) });
-                         return res.status(200).json({ message: " Product Added Cart  SuccessFull", cartData });
-                    }
-               }
-
-               const newCart = await Cart.create({
-                    user: ObjectId(req.body.user),
-                    products: [
-                         {
-                              productId: ObjectId(req.body._id),
-                              count: req.body.count,
-                         },
-                    ],
+               const product = await User.findOne({
+                    _id: ObjectId(data.user),
+                    cartProducts: { $elemMatch: { _id: data._id } },
                });
 
-               const cartData = await Cart.findOne({ user: ObjectId(req.body.user) });
+               console.log(product + "products");
+               if (product) {
+                    const updateCount = await User.findOneAndUpdate(
+                         {
+                              _id: ObjectId(data.user),
+                              cartProducts: { $elemMatch: { _id: data._id } },
+                         },
+                         { $inc: { "cartProducts.$.count": data.count } }
+                    );
 
-               return res.status(200).json({ message: "  New Product Added Cart  SuccessFull", cartData });
+                    console.log(updateCount + "updated");
+
+                    const userData = await User.findOne({ _id: ObjectId(data.user) });
+                    const cartData = userData.cartProducts;
+                    return res.status(200).json({ message: " Cart Updated SuccessFull", cartData });
+               }
+               const addProduct = await User.findOneAndUpdate(
+                    { _id: ObjectId(req.body.user) },
+                    { $push: { cartProducts: data } }
+               );
+               console.log(addProduct);
+
+               const userData = await User.findOne({ _id: ObjectId(data.user) });
+               const cartData = userData.cartProducts;
+               return res.status(200).json({ message: "  New Product Added To Cart", cartData, userData });
           } catch (error) {
                console.log("ADDAYI BUT ENTHAROO KOYAPPAM");
                console.log(error);
@@ -100,168 +49,96 @@ module.exports = {
 
      incCart: async (req, res) => {
           console.log("incart");
-          console.log(req.body);
-
+          const user = req.body.user;
+          const product = req.body._id;
+          console.log(user, product);
           try {
-               const updateCart = await Cart.findOneAndUpdate(
+               const updateCount = await User.findOneAndUpdate(
                     {
-                         _id: ObjectId(req.body.id),
-                         products: { $elemMatch: { productId: ObjectId(req.body._id) } },
+                         _id: ObjectId(user),
+                         cartProducts: { $elemMatch: { _id: product } },
                     },
-                    { $inc: { "products.$.count": 1 } }
+                    { $inc: { "cartProducts.$.count": 1 } }
                );
 
-               let cartData = await Cart.aggregate([
-                    { $match: { _id: { $eq: ObjectId(req.body.id) } } },
-                    {
-                         $lookup: {
-                              from: "products",
-                              localField: "products.productId",
-                              foreignField: "_id",
-                              as: "productDetail",
-                         },
-                    },
-               ]);
-
-               console.log(cartData);
-               console.log("here");
-               if (cartData) {
-                    for (let i = 0; cartData[0].products.length > i; i++) {
-                         for (let j = 0; cartData[0].products.length > j; j++) {
-                              console.log(cartData[0].productDetail[i]._id.toString());
-                              console.log(cartData[0].products[j].productId.toString());
-                              if (
-                                   cartData[0].productDetail[i]._id.toString() ===
-                                   cartData[0].products[j].productId.toString()
-                              ) {
-                                   console.log("its fucking true");
-                                   cartData[0].productDetail[i].counts = cartData[0].products[j].count;
-                                   cartData[0].productDetail[i].id = cartData[0]._id;
-                              }
-                         }
-                    }
-                    return res.status(200).json({ message: "Cart Updated SuccessFull", cartData });
+               if (updateCount) {
+                    const userData = await User.findOne({ _id: ObjectId(user) });
+                    const cartData = userData.cartProducts;
+                    return res.status(200).json({ message: "  incremented", cartData, userData });
                }
-               console.log(updateCart + "djnjfwn updated");
+
+               return res.status(500).json({ message: "not incremneted" });
           } catch (error) {
                console.log(error);
+               console.log(error.message);
+               return res.status(500).json({ message: "something went wrong" });
           }
      },
 
      decCart: async (req, res) => {
-          console.log("fecccart");
-          console.log(req.body);
-
+          console.log("decart");
+          const user = req.body.user;
+          const product = req.body._id;
+          console.log(user, product);
           try {
-               const updateCart = await Cart.findOneAndUpdate(
+               const updateCount = await User.findOneAndUpdate(
                     {
-                         _id: ObjectId(req.body.id),
-                         products: { $elemMatch: { productId: ObjectId(req.body._id) } },
+                         _id: ObjectId(user),
+                         cartProducts: { $elemMatch: { _id: product } },
                     },
-                    { $inc: { "products.$.count": -1 } }
+                    { $inc: { "cartProducts.$.count": -1 } }
                );
 
-               let cartData = await Cart.aggregate([
-                    { $match: { _id: { $eq: ObjectId(req.body.id) } } },
-                    {
-                         $lookup: {
-                              from: "products",
-                              localField: "products.productId",
-                              foreignField: "_id",
-                              as: "productDetail",
-                         },
-                    },
-               ]);
-
-               console.log(cartData);
-
-               console.log("decart hetehere");
-               if (cartData) {
-                    for (let i = 0; cartData[0].products.length > i; i++) {
-                         for (let j = 0; cartData[0].products.length > j; j++) {
-                              console.log(cartData[0].productDetail[i]._id.toString());
-                              console.log(cartData[0].products[j].productId.toString());
-                              if (
-                                   cartData[0].productDetail[i]._id.toString() ===
-                                   cartData[0].products[j].productId.toString()
-                              ) {
-                                   console.log("its fucking true");
-                              }
-                              cartData[0].productDetail[i].counts = cartData[0].products[j].count;
-                              cartData[0].productDetail[i].id = cartData[0]._id;
-
-                              console.log(cartData[0].productDetail[i].id + "updated");
-                         }
-                    }
-
-                    return res.status(200).json({ message: " Product Added Cart  SuccessFull", cartData });
+               if (updateCount) {
+                    const userData = await User.findOne({ _id: ObjectId(user) });
+                    const cartData = userData.cartProducts;
+                    return res.status(200).json({ message: "  deccremented", cartData, userData });
                }
 
-               console.log(updateCart);
+               return res.status(500).json({ message: "not deccremneted" });
           } catch (error) {
                console.log(error);
+               console.log(error.message);
+               return res.status(500).json({ message: "something went wrong" });
           }
      },
 
      deleCart: async (req, res) => {
+          const user = req.body.user;
+          const product = req.body._id;
+          console.log(user, product);
           try {
-               const product = await Cart.findOneAndUpdate(
+               const deleteProduct = await User.findOneAndUpdate(
                     {
-                         _id: ObjectId(req.body.id),
-                    },{
-                         $pull:{products:{productId:ObjectId(req.body._id)}}
+                         _id: ObjectId(user),
+                    },
+                    {
+                         $pull: { cartProducts: { _id: product } },
                     }
-                  
                );
 
-
-               let cartData = await Cart.aggregate([
-                    { $match: { _id: { $eq: ObjectId(req.body.id) } } },
-                    {
-                         $lookup: {
-                              from: "products",
-                              localField: "products.productId",
-                              foreignField: "_id",
-                              as: "productDetail",
-                         },
-                    },
-               ]);
-
-               console.log("here");
-               if (cartData) {
-                    for (let i = 0; cartData[0].products.length > i; i++) {
-                         for (let j = 0; cartData[0].products.length > j; j++) {
-                              console.log(cartData[0].productDetail[i]._id.toString());
-                              console.log(cartData[0].products[j].productId.toString());
-                              if (
-                                   cartData[0].productDetail[i]._id.toString() ===
-                                   cartData[0].products[j].productId.toString()
-                              ) {
-                                   console.log("its fucking true");
-                                   cartData[0].productDetail[i].counts = cartData[0].products[j].count;
-                                   cartData[0].productDetail[i].id = cartData[0]._id;
-                                   console.log(cartData[0].productDetail[i].id + "updated");
-                              }
-                         }
-                    }
-                    return res.status(200).json({ message: "Cart Updated SuccessFull", cartData });
+               if (deleteProduct) {
+                    console.log(deleteProduct + "deleted");
+                    const userData = await User.findOne({ _id: ObjectId(user) });
+                    const cartData = userData.cartProducts;
+                    return res.status(200).json({ message: " Product Removed From Cart", cartData, userData });
                }
-
-               return res.status(500).json({ message: "No cart found" });
           } catch (error) {
                console.log(error);
+               console.log(error.message);
                return res.status(500).json({ message: "something went wrong" });
           }
      },
-     getCartCount: async(req, res)=>{
-          try {
-               let cartData = await Cart.aggregate([
-                    { $match: { user: { $eq: req.body.user } } } ,{
-                         
-                    }])
-               
-          } catch (error) {
-               
-          }
-     }
+      getCartCount: async (req, res) => {
+     //      console.log("onCartCount");
+     //      console.log(req.body.user);
+     //      try {
+     //           let cartData = await Cart.aggregate([{ $match: { user: { $eq: req.body.user } } }, {
+     //                $project:{totalCount:{$sum:"cartProducts.$.count"}}
+
+     //           }]);
+
+     //           console.log(cartData);
+     //      } catch (error) {}
+      },
 };
