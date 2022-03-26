@@ -107,9 +107,12 @@ module.exports = {
           try {
                const address = await User.findOneAndUpdate({ _id: ObjectId(user) }, { $push: { address: newData } });
                if (address) {
+                    console.log(address);
                     const userData = await User.findOne({ _id: ObjectId(user) });
                     return res.status(200).json({ message: " Address Added", userData });
                }
+               return res.status(500).json({ message: "No user found" });
+
           } catch (error) {
                console.log(error);
                console.log(error.message);
