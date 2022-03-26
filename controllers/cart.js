@@ -26,7 +26,7 @@ module.exports = {
 
                     const userData = await User.findOne({ _id: ObjectId(data.user) });
                     const cartData = userData.cartProducts;
-                    return res.status(200).json({ message: " Cart Updated SuccessFull", cartData ,userData,});
+                    return res.status(200).json({ message: " Cart Updated SuccessFull", cartData, userData });
                }
                const addProduct = await User.findOneAndUpdate(
                     { _id: ObjectId(req.body.user) },
@@ -127,16 +127,27 @@ module.exports = {
                return res.status(500).json({ message: "something went wrong" });
           }
      },
-      getCartCount: async (req, res) => {
-     //      console.log("onCartCount");
-     //      console.log(req.body.user);
-     //      try {
-     //           let cartData = await Cart.aggregate([{ $match: { user: { $eq: req.body.user } } }, {
-     //                $project:{totalCount:{$sum:"cartProducts.$.count"}}
 
-     //           }]);
+     totalCart: async (req, res) => {
+          console.log("started total cart");
+          console.log(req.body.user);
+          try {
+               const cartTotal = await User.aggregate([
+                    { $match: { _id: ObjectId(req.data.user) } },
+                    { $group: { total: { $sum: { $multiply: ["$cartProducts.$.count" ,"$cartProducts.$.SellingPrice" ] } } } },
+               ]);
+               console.log(cartTotal);
+          } catch (error) {}
+     },
 
-     //           console.log(cartData);
-     //      } catch (error) {}
-      },
+     getCartCount: async (req, res) => {
+          //      console.log("onCartCount");
+          //      console.log(req.body.user);
+          //      try {
+          //           let cartData = await Cart.aggregate([{ $match: { _id: { $eq: req.body.user } } }, {
+          //                $project:{totalCount:{$sum:"cartProducts.$.count"}}
+          //           }]);
+          //           console.log(cartData);
+          //      } catch (error) {}
+     },
 };

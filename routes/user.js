@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router();
 
-const {userSignup,mobileLogin,otpLogin,userLogin} =require('../controllers/user')
-const {addToCart,incCart,decCart,deleCart,getCartCount} =require("../controllers/cart")
+const {userSignup,mobileLogin,otpLogin,userLogin,addAddress} =require('../controllers/user')
+const {addToCart,incCart,decCart,deleCart,getCartCount,totalCart} =require("../controllers/cart")
 const {addWishlist,getWishlist,deleWishlist} = require("../controllers/wishlist")
 
 //middleware
@@ -18,9 +18,11 @@ router.post("/getCartCount",getCartCount)
 router.post("/incCart",incCart)
 router.post("/decCart",decCart)
 router.post("/deleCart",deleCart)
+router.post("/totalCart",totalCart)
 router.post("/addWishlist",addWishlist)
 router.post("/getWishlist",getWishlist)
 router.post("/deleWishlist",deleWishlist)
+router.post("/addAddress",addAddress)
 
 
 

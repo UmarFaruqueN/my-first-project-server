@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const ObjectId = require("mongodb").ObjectId;
 const bcrypt = require("bcrypt");
 const serviceSSID = "VA68f7d8d4ec396d16e5886f5f2ed07da9";
 const accountSSID = "ACa177557bacd7c7b44f9396397e2922cd";
@@ -37,7 +38,9 @@ module.exports = {
                     if (result) {
                          const token = user.generateAuthToken();
                          console.log(token);
-                         return res.status(200).json({ message: "Login Sucess", token, userName: user.name, userId: user._id, user });             
+                         return res
+                              .status(200)
+                              .json({ message: "Login Sucess", token, userName: user.name, userId: user._id, user });
                     }
 
                     return res.status(500).json({ message: "Password Doesnot Match" });
@@ -87,6 +90,28 @@ module.exports = {
                     return res.status(500).json({ message: "something went wrong" });
                }
           } catch (error) {
+               console.log(error.message);
+               return res.status(500).json({ message: "something went wrong" });
+          }
+     },
+
+     addAddress: async (req, res) => {
+          console.log("AdDress Startsss");
+          const data = req.body;
+          const user = req.body.user;
+          const date = new Date();
+          console.log(data);
+          const newData = { ...data, date };
+          console.log(newData);
+
+          try {
+               const address = await User.findOneAndUpdate({ _id: ObjectId(user) }, { $push: { address: newData } });
+               if (address) {
+                    const userData = await User.findOne({ _id: ObjectId(user) });
+                    return res.status(200).json({ message: " Address Added", userData });
+               }
+          } catch (error) {
+               console.log(error);
                console.log(error.message);
                return res.status(500).json({ message: "something went wrong" });
           }
