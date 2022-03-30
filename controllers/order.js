@@ -2,6 +2,7 @@ const { ObjectId } = require("mongodb");
 const Order = require("../models/order");
 const User = require("../models/user");
 
+
 module.exports = {
      addOrder: async (req, res) => {
           console.log("started Add order");
@@ -17,8 +18,10 @@ module.exports = {
                shipping: data.shipping,
                discount: data.discount,
                total: data.total,
-               paymentStatus: "pending",
-               deliveryStatus: "pending",
+               paymentType: data.paymentType,
+               orderTime: data.orderTime,
+               orderStatus: "Not Delivered",
+               deliveryTime: "",
           };
 
           try {
@@ -76,4 +79,6 @@ module.exports = {
                return res.status(500).json({ message: "Something went wrong           " });
           }
      },
+
+     
 };

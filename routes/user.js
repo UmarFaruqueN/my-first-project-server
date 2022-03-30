@@ -4,7 +4,8 @@ const router = express.Router();
 const {userSignup,mobileLogin,otpLogin,userLogin,addAddress} =require('../controllers/user')
 const {addToCart,incCart,decCart,deleCart,getCartCount,totalCart} =require("../controllers/cart")
 const {addWishlist,getWishlist,deleWishlist} = require("../controllers/wishlist");
-const { addOrder, getOrder,cancelOrder } = require('../controllers/order');
+const { addOrder, getOrder,cancelOrder, } = require('../controllers/order');
+const {addOrderRazorpay,getRazorpayKey} = require('../controllers/payment')
 
 //middleware
 
@@ -25,6 +26,8 @@ router.post("/getWishlist",getWishlist)
 router.post("/deleWishlist",deleWishlist)
 router.post("/addAddress",addAddress)
 router.post("/addOrder",addOrder)
+router.get("/getRazorpayKey",getRazorpayKey)
+router.post("/addOrderRazorpay",addOrderRazorpay)
 router.post("/getOrder",getOrder)
 router.post("/cancelOrder",cancelOrder)
 

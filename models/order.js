@@ -28,7 +28,6 @@ const orderSchema = new mongoose.Schema({
           required: true,
      },
      shipping: {
-        
           type: Number,
           required: true,
      },
@@ -40,13 +39,20 @@ const orderSchema = new mongoose.Schema({
           type: Number,
           required: true,
      },
-     paymentStatus: {
+     paymentType: {
           type: String,
           required: true,
      },
-     deliveryStatus: {
+     orderStatus: {
           type: String,
           required: true,
+     },
+     orderTime: {
+          type: String,
+     },
+     deliveryTime: {
+          type: String,
+     
      },
 });
 
