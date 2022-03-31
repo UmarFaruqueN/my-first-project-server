@@ -2,8 +2,24 @@ const { ObjectId } = require("mongodb");
 const Order = require("../models/order");
 const User = require("../models/user");
 
-
 module.exports = {
+     getAllOrder: async (req, res) => {
+          console.log("getALLOrder");
+          try {
+               const allOrders = await Order.find();
+               if (allOrders) {
+                    res.status(200).json({
+                         message: " Orders Fetched Successfully",
+                         allOrders,
+                    });
+               } else {
+                    return res.status(500).json({ message: "didnt got Orders from database" });
+               }
+          } catch (error) {
+               console.log(error.message);
+               res.status(500).json({ message: "something went wrong" });
+          }
+     },
      addOrder: async (req, res) => {
           console.log("started Add order");
           const data = req.body;
@@ -79,6 +95,4 @@ module.exports = {
                return res.status(500).json({ message: "Something went wrong           " });
           }
      },
-
-     
 };

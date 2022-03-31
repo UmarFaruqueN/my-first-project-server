@@ -50,9 +50,8 @@ const orderSchema = new mongoose.Schema({
      orderTime: {
           type: String,
      },
-     deliveryTime: {
+     statusTime: {
           type: String,
-     
      },
 });
 

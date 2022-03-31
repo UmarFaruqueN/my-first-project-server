@@ -6,6 +6,7 @@ const ObjectId = require("mongodb").ObjectId;
 const cloudinary = require("../utils/clounidary");
 const Banner = require("../models/banner");
 const Cart = require("../models/cart");
+const Order = require("../models/order");
 
 module.exports = {
      addProduct: async (req, res) => {
@@ -40,6 +41,7 @@ module.exports = {
                const allSubCategory = await SubCategory.find();
                const allType = await Type.find();
                const allBanner = await Banner.find();
+               const allOrders = await Order.find();
 
                if (allProduct) {
                     // console.log(ProductData[0]);
@@ -50,6 +52,7 @@ module.exports = {
                          allSubCategory,
                          allType,
                          allBanner,
+                         allOrders,
                     });
 
                } else {
