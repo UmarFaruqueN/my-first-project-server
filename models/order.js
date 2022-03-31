@@ -7,7 +7,7 @@ const orderSchema = new mongoose.Schema({
           required: true,
      },
      name: {
-          type: Array,
+          type: String,
           required: true,
      },
      phone: {

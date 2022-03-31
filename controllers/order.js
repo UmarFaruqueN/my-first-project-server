@@ -36,8 +36,8 @@ module.exports = {
                total: data.total,
                paymentType: data.paymentType,
                orderTime: data.orderTime,
-               orderStatus: "Not Delivered",
-               deliveryTime: "",
+               orderStatus: "User Ordered",
+               statusTime: data.orderTime,
           };
 
           try {
@@ -82,7 +82,10 @@ module.exports = {
      cancelOrder: async (req, res) => {
           const user = req.body._id;
           try {
-               const order = await Order.deleteOne({ _id: ObjectId(user) });
+               const order = await Order.findOneAndUpdate(
+                    { _id: ObjectId(user) },
+                    { $set: { orderStatus: "User Cancelled" } }
+               );
                if (order) {
                     const orderData = await Order.find({ userId: user });
                     if (orderData) {
@@ -93,6 +96,28 @@ module.exports = {
           } catch (error) {
                console.log(error);
                return res.status(500).json({ message: "Something went wrong           " });
+          }
+     },
+     updateOrder: async (req, res) => {
+          const { _id, status } = req.body;
+
+          console.log(_id);
+          try {
+               const updateOrder = await Order.findOneAndUpdate({ _id: ObjectId(_id) }, { $set: { orderStatus: status } });
+               if (updateOrder) {
+                    const allOrders = await Order.find();
+                    if (allOrders) {
+                         res.status(200).json({
+                              message: " Status Updated Successfully",
+                              allOrders,
+                         });
+                    } else {
+                         return res.status(500).json({ message: " Status didnt Updated" });
+                    }
+               }
+          } catch (error) {
+               console.log(error.message);
+               res.status(500).json({ message: "something went wrong" });
           }
      },
 };

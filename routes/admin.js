@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { adminSignup, adminLogin, getUsers, updateUserStatus, updateUser, deleteUser } = require("../controllers/admin");
-const { getAllOrder } = require("../controllers/order");
+const { getAllOrder ,updateOrder} = require("../controllers/order");
 
 //middleware
 
@@ -13,6 +13,7 @@ router.get("/getUsers", getUsers);
 router.post("/updateUserStatus", updateUserStatus);
 router.post("/updateUser", updateUser);
 router.post("/deleteUser", deleteUser);
-router.get("getAllOrder", getAllOrder);
+router.get("/getAllOrder", getAllOrder);
+router.post("/updateOrder",updateOrder)
 
 module.exports = router;
