@@ -1,6 +1,7 @@
 const Admin = require("../models/admin");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const { ObjectId } = require("mongodb");
 
 module.exports = {
      adminSignup: async (req, res) => {
@@ -69,17 +70,19 @@ module.exports = {
           }
      },
      updateUser: async (req, res) => {
+          console.log(req.body);
+          const { _id, name, email, phone, active } = req.body;
           try {
                console.log(req.body);
 
                const updatedUser = await User.findOneAndUpdate(
-                    { phone: req.body.phone },
+                    { _id: ObjectId(_id) },
                     {
                          $set: {
-                              name: req.body.name,
-                              email: req.body.email,
-                              phone: req.body.phone,
-                              active: req.body.active,
+                              name: name,
+                              email: email,
+                              phone: phone,
+                              active: active,
                          },
                     }
                );
