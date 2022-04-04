@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
 
-const {addProduct,getProduct,deleteProduct, addImage,getAllProduct,updateProduct} =require('../controllers/product');
+const {addProduct,getProduct,deleteProduct, addImage,getAllProduct,updateProduct,getOneProduct} =require('../controllers/product');
 
 
 //middleware
@@ -12,6 +12,7 @@ const upload = require("../utils/multer")
 router.post("/add",addProduct);
 router.get("/getAll",getAllProduct);
 router.post("/get",getProduct);
+router.post("/getOneProduct",getOneProduct)
 router.post("/update",updateProduct);
 router.post("/delete",deleteProduct);
 

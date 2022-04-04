@@ -54,7 +54,6 @@ module.exports = {
                          allBanner,
                          allOrders,
                     });
-
                } else {
                     return res.status(500).json({ message: "didnt got Product from database" });
                }
@@ -175,6 +174,20 @@ module.exports = {
                const allProduct = await Product.find();
 
                return res.status(200).json({ message: " Product Created Successfully", allProduct });
+          } catch (error) {
+               console.log(error.message + "entho error");
+               return res.status(500).json({ message: "something went wrong" });
+          }
+     },
+
+     getOneProduct: async (req, res) => {
+          const { _id } = req.body;
+          console.log(_id);
+          try {
+               const oneProduct = await Product.findOne({ _id: ObjectId(_id) });
+               if (oneProduct) {
+                    return res.status(200).json({ message: " Product fetched Successfully", oneProduct });
+               }
           } catch (error) {
                console.log(error.message + "entho error");
                return res.status(500).json({ message: "something went wrong" });

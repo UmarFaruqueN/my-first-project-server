@@ -5,8 +5,7 @@ const serviceSSID = "VA68f7d8d4ec396d16e5886f5f2ed07da9";
 const accountSSID = "ACa177557bacd7c7b44f9396397e2922cd";
 const authToken = "3fdef5e9103bb0a89fce1c70b65ab136";
 const client = require("twilio")(accountSSID, authToken);
-const emailValidation = require('nodejs-email-validation')
-
+const emailValidation = require("nodejs-email-validation");
 
 module.exports = {
      userSignup: async (req, res) => {
@@ -139,7 +138,7 @@ module.exports = {
           }
      },
 
-     editPhone:  async (req, res) => {
+     editPhone: async (req, res) => {
           console.log(req.body);
           const { update, user } = req.body;
           try {
@@ -166,7 +165,7 @@ module.exports = {
           }
      },
 
-     editEmail:  async (req, res) => {   
+     editEmail: async (req, res) => {
           console.log(req.body);
           const { update, user } = req.body;
           try {
@@ -174,22 +173,20 @@ module.exports = {
                     return res.status(500).json({ message: "Same As Old Email" });
                }
 
-             const validateEmail= await  emailValidation.validate(update)
-             if(validateEmail){
+               const validateEmail = await emailValidation.validate(update);
+               if (validateEmail) {
+                    const editName = await User.findOneAndUpdate(
+                         { _id: ObjectId(user) },
+                         {
+                              $set: { email: update },
+                         }
+                    );
 
-
-               const editName = await User.findOneAndUpdate(
-                    { _id: ObjectId(user) },
-                    {
-                         $set: { email: update },
+                    if (editName) {
+                         const userData = await User.findOne({ id: ObjectId(user) });
+                         return res.status(200).json({ message: "Email Updated", userData });
                     }
-               );
-
-               if (editName) {
-                    const userData = await User.findOne({ id: ObjectId(user) });
-                    return res.status(200).json({ message: "Email Updated", userData });
                }
-          }
                return res.status(500).json({ message: "Enter Valid Email" });
           } catch (error) {
                console.log(error);
