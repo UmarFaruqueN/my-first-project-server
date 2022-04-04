@@ -53,6 +53,16 @@ const orderSchema = new mongoose.Schema({
      statusTime: {
           type: String,
      },
+     day: {
+          type: String,
+     },
+     month: {
+          type: String,
+     },
+     weekNumber: {
+          type: String,
+     },
+
 });
 
 const Order = connection.model("Order", orderSchema);

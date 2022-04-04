@@ -1,11 +1,12 @@
 const express = require('express')
 const router = express.Router();
 
-const {userSignup,mobileLogin,otpLogin,userLogin,addAddress} =require('../controllers/user')
+const {userSignup,mobileLogin,otpLogin,userLogin,getUser,editName,editPhone,editEmail,editPassword} =require('../controllers/user')
 const {addToCart,incCart,decCart,deleCart,getCartCount,totalCart} =require("../controllers/cart")
 const {addWishlist,getWishlist,deleWishlist} = require("../controllers/wishlist");
 const { addOrder, getOrder,cancelOrder, } = require('../controllers/order');
-const {addOrderRazorpay,getRazorpayKey} = require('../controllers/payment')
+const {addOrderRazorpay,getRazorpayKey} = require('../controllers/payment');
+const {addAddress,updateAddress,deleteAddress,getAddress}= require("../controllers/address")
 
 //middleware
 
@@ -25,12 +26,21 @@ router.post("/addWishlist",addWishlist)
 router.post("/getWishlist",getWishlist)
 router.post("/deleWishlist",deleWishlist)
 router.post("/addAddress",addAddress)
+router.post("/getAddress",getAddress)
+router.post("/updateAddress",updateAddress)
+router.post("/deleteAddress",deleteAddress)
+
 router.post("/addOrder",addOrder)
 router.get("/getRazorpayKey",getRazorpayKey)
 router.post("/addOrderRazorpay",addOrderRazorpay)
 router.post("/getOrder",getOrder)
 router.post("/cancelOrder",cancelOrder)
+router.post("/getUser",getUser)
 
+router.post("/editName",editName)
+router.post("/editPhone",editPhone)
+router.post("/editEmail",editEmail)
+router.post("/editPassword",editPassword)
 
 
 

@@ -5,6 +5,8 @@ const serviceSSID = "VA68f7d8d4ec396d16e5886f5f2ed07da9";
 const accountSSID = "ACa177557bacd7c7b44f9396397e2922cd";
 const authToken = "3fdef5e9103bb0a89fce1c70b65ab136";
 const client = require("twilio")(accountSSID, authToken);
+const emailValidation = require('nodejs-email-validation')
+
 
 module.exports = {
      userSignup: async (req, res) => {
@@ -95,28 +97,106 @@ module.exports = {
           }
      },
 
-     addAddress: async (req, res) => {
-          console.log("AdDress Startsss");
-          const data = req.body;
-          const user = req.body.user;
-          const date = new Date();
-          console.log(data);
-          const newData = { ...data, date };
-          console.log(newData);
-
+     getUser: async (req, res) => {
+          const { user } = req.body;
           try {
-               const address = await User.findOneAndUpdate({ _id: ObjectId(user) }, { $push: { address: newData } });
-               if (address) {
-                    console.log(address);
-                    const userData = await User.findOne({ _id: ObjectId(user) });
-                    return res.status(200).json({ message: " Address Added", userData });
+               const userData = await User.findOne({ _id: ObjectId(user) });
+               if (userData) {
+                    return res.status(200).json({ message: " Address fetched", userData });
                }
                return res.status(500).json({ message: "No user found" });
-
           } catch (error) {
                console.log(error);
                console.log(error.message);
                return res.status(500).json({ message: "something went wrong" });
           }
      },
+
+     editName: async (req, res) => {
+          console.log(req.body);
+          const { update, user } = req.body;
+          try {
+               if (update === null) {
+                    return res.status(500).json({ message: "Same As Old Name" });
+               }
+
+               const editName = await User.findOneAndUpdate(
+                    { _id: ObjectId(user) },
+                    {
+                         $set: { name: update },
+                    }
+               );
+
+               if (editName) {
+                    const userData = await User.findOne({ id: ObjectId(user) });
+                    return res.status(200).json({ message: "Name Updated", userData });
+               }
+               return res.status(500).json({ message: "No user found" });
+          } catch (error) {
+               console.log(error);
+               console.log(error.message);
+               return res.status(500).json({ message: "something went wrong" });
+          }
+     },
+
+     editPhone:  async (req, res) => {
+          console.log(req.body);
+          const { update, user } = req.body;
+          try {
+               if (update === null) {
+                    return res.status(500).json({ message: "Same As Old Phone" });
+               }
+
+               const editName = await User.findOneAndUpdate(
+                    { _id: ObjectId(user) },
+                    {
+                         $set: { phone: update },
+                    }
+               );
+
+               if (editName) {
+                    const userData = await User.findOne({ id: ObjectId(user) });
+                    return res.status(200).json({ message: "Phone Updated", userData });
+               }
+               return res.status(500).json({ message: "No user found" });
+          } catch (error) {
+               console.log(error);
+               console.log(error.message);
+               return res.status(500).json({ message: "something went wrong" });
+          }
+     },
+
+     editEmail:  async (req, res) => {   
+          console.log(req.body);
+          const { update, user } = req.body;
+          try {
+               if (update === null) {
+                    return res.status(500).json({ message: "Same As Old Email" });
+               }
+
+             const validateEmail= await  emailValidation.validate(update)
+             if(validateEmail){
+
+
+               const editName = await User.findOneAndUpdate(
+                    { _id: ObjectId(user) },
+                    {
+                         $set: { email: update },
+                    }
+               );
+
+               if (editName) {
+                    const userData = await User.findOne({ id: ObjectId(user) });
+                    return res.status(200).json({ message: "Email Updated", userData });
+               }
+          }
+               return res.status(500).json({ message: "Enter Valid Email" });
+          } catch (error) {
+               console.log(error);
+               console.log(error.message);
+               return res.status(500).json({ message: "something went wrong" });
+          }
+     },
+
+     editPassword: async (req, res) => {},
 };

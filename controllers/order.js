@@ -6,8 +6,9 @@ module.exports = {
      getAllOrder: async (req, res) => {
           console.log("getALLOrder");
           try {
-               const allOrders = await Order.find();
-               if (allOrders) {
+               const orderData = await Order.find();
+               if (orderData) {
+                    const allOrders = orderData.reverse();
                     res.status(200).json({
                          message: " Orders Fetched Successfully",
                          allOrders,
@@ -23,6 +24,7 @@ module.exports = {
      addOrder: async (req, res) => {
           console.log("started Add order");
           const data = req.body;
+
           const details = {
                userId: data.address._id,
                name: data.address.name,
@@ -38,12 +40,16 @@ module.exports = {
                orderTime: data.orderTime,
                orderStatus: "User Ordered",
                statusTime: data.orderTime,
+               day:data.orderDay,
+               month:data.orderMonth,
+               weekNumber:data.weekNumber
           };
 
           try {
                const newOrder = await Order.create(details);
                if (newOrder) {
-                    const orderData = await Order.find({ userId: data.address._id });
+                    const allOrder = await Order.find({ userId: data.address._id });
+                    const orderData = allOrder.reverse();
                     const removeCart = await User.findOneAndUpdate(
                          { _id: ObjectId(data.address._id) },
                          {
@@ -68,9 +74,11 @@ module.exports = {
           user = req.body.user;
 
           try {
-               const orderData = await Order.find({ userId: user });
-               if (orderData) {
+               const allOrder = await Order.find({ userId: user });
+               if (allOrder) {
                     console.log(orderData[0]);
+
+                    const orderData = allOrder.reverse();
                     return res.status(200).json({ message: "Order fetched", orderData });
                }
                return res.status(500).json({ message: "No Order found in DataBase " });
@@ -81,15 +89,17 @@ module.exports = {
      },
      cancelOrder: async (req, res) => {
           const user = req.body._id;
+          const date = req.body.orderDate;
           try {
                const order = await Order.findOneAndUpdate(
                     { _id: ObjectId(user) },
-                    { $set: { orderStatus: "User Cancelled" } }
+                    { $set: { orderStatus: "User Cancelled", statusTime: date } }
                );
                if (order) {
-                    const orderData = await Order.find({ userId: user });
-                    if (orderData) {
-                         console.log(orderData[0]);
+                    const allOrder = await Order.find({ userId: user });
+                    if (allOrder) {
+                         console.log(allOrder[0]);
+                         const orderData = allOrder.reverse();
                          return res.status(200).json({ message: "Order Cancelled", orderData });
                     }
                }
@@ -105,8 +115,9 @@ module.exports = {
           try {
                const updateOrder = await Order.findOneAndUpdate({ _id: ObjectId(_id) }, { $set: { orderStatus: status } });
                if (updateOrder) {
-                    const allOrders = await Order.find();
-                    if (allOrders) {
+                    const orderData = await Order.find();
+                    if (orderData) {
+                         const allOrders = orderData.reverse();
                          res.status(200).json({
                               message: " Status Updated Successfully",
                               allOrders,
