@@ -7,6 +7,7 @@ const cloudinary = require("../utils/clounidary");
 const Banner = require("../models/banner");
 const Cart = require("../models/cart");
 const Order = require("../models/order");
+const Offer = require("../models/offers");
 
 module.exports = {
      addProduct: async (req, res) => {
@@ -42,6 +43,8 @@ module.exports = {
                const allType = await Type.find();
                const allBanner = await Banner.find();
                const allOrders = await Order.find();
+               const allOffer = await Offer.find()
+               console.log(allOffer);
 
                if (allProduct) {
                     // console.log(ProductData[0]);
@@ -53,6 +56,7 @@ module.exports = {
                          allType,
                          allBanner,
                          allOrders,
+                         allOffer,
                     });
                } else {
                     return res.status(500).json({ message: "didnt got Product from database" });
