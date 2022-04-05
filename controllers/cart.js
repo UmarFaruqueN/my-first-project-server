@@ -26,6 +26,7 @@ module.exports = {
 
                     const userData = await User.findOne({ _id: ObjectId(data.user) });
                     const cartData = userData.cartProducts;
+                    
                     return res.status(200).json({ message: " Cart Updated SuccessFull", cartData, userData });
                }
                const addProduct = await User.findOneAndUpdate(

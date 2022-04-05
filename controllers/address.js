@@ -37,7 +37,7 @@ module.exports = {
      },
 
      updateAddress: async (req, res) => {
-          const { _id, user, name, phone,email, address, street, city, pin, district, state, } = req.body;
+          const { _id, user, name, phone, email, address, street, city, pin, district, state } = req.body;
           try {
                const updateAdress = await Address.findOneAndUpdate(
                     { _id: ObjectId(_id) },
@@ -46,7 +46,7 @@ module.exports = {
                               user: user,
                               name: name,
                               phone: phone,
-                              email:email,
+                              email: email,
                               address: address,
                               street: street,
                               city: city,

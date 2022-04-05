@@ -29,8 +29,7 @@ module.exports = {
                userId: data.address._id,
                name: data.address.name,
                phone: data.address.phone,
-               address: data.address.address[0],
-
+               address: data.address.address,
                products: data.products,
                subtotal: data.subtotal,
                shipping: data.shipping,
@@ -40,9 +39,9 @@ module.exports = {
                orderTime: data.orderTime,
                orderStatus: "User Ordered",
                statusTime: data.orderTime,
-               day:data.orderDay,
-               month:data.orderMonth,
-               weekNumber:data.weekNumber
+               day: data.orderDay,
+               month: data.orderMonth,
+               weekNumber: data.weekNumber,
           };
 
           try {
@@ -59,7 +58,7 @@ module.exports = {
                     );
 
                     console.log(removeCart);
-                    if (orderData && removeCart) {
+                    if (orderData) {
                          return res.status(200).json({ message: "Order Created..", orderData });
                     }
                     return res.status(500).json({ message: "No Order found in DataBase " });
@@ -129,6 +128,24 @@ module.exports = {
           } catch (error) {
                console.log(error.message);
                res.status(500).json({ message: "something went wrong" });
+          }
+     },
+     getSales: async (req, res) => {
+          console.log("getSales");
+          try {
+               const Orders = await Order.find({ orderStatus: "User Ordered" });
+               const Sales = await Order.find({ orderStatus: "Item Delivered" });
+               const Shipped = await Order.find({ orderStatus: "Item Shipped" });
+               const Cancelled = await Order.find({ orderStatus: "User Cancelled" });
+               res.status(200).json({
+                    message: " Data Fetched Successfully",
+                    Orders,
+                    Sales,
+                    Shipped,
+                    Cancelled,
+               });
+          } catch (error) {
+               console.log(error);
           }
      },
 };
