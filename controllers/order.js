@@ -70,20 +70,20 @@ module.exports = {
           }
      },
      getOrder: async (req, res) => {
-          user = req.body.user;
+      const {user}= req.body;
 
           try {
                const allOrder = await Order.find({ userId: user });
                if (allOrder) {
                     console.log(orderData[0]);
 
-                    const orderData = allOrder.reverse();
+                    const orderData = await allOrder.reverse();
                     return res.status(200).json({ message: "Order fetched", orderData });
                }
                return res.status(500).json({ message: "No Order found in DataBase " });
           } catch (error) {
                console.log(error);
-               return res.status(500).json({ message: "Something went wrong           " });
+               return res.status(500).json({ message: "Something went wron " });
           }
      },
      cancelOrder: async (req, res) => {

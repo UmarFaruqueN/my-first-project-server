@@ -43,7 +43,7 @@ module.exports = {
                const allType = await Type.find();
                const allBanner = await Banner.find();
                const allOrders = await Order.find();
-               const allOffer = await Offer.find()
+               const allOffer = await Offer.find();
                console.log(allOffer);
 
                if (allProduct) {
@@ -197,4 +197,10 @@ module.exports = {
                return res.status(500).json({ message: "something went wrong" });
           }
      },
+     getCatProducts: async (req, res) => {
+          const { Category } = req.body;
+          try {
+          } catch (error) {}
+     },
+     getSubCatProducts: async (req, res) => {},
 };

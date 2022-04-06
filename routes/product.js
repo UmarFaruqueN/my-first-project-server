@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
 
-const {addProduct,getProduct,deleteProduct, addImage,getAllProduct,updateProduct,getOneProduct} =require('../controllers/product');
+const {addProduct,getProduct,deleteProduct, addImage,getAllProduct,updateProduct,getOneProduct,getCatProducts,getSubCatProducts} =require('../controllers/product');
 
 
 //middleware
@@ -15,6 +15,10 @@ router.post("/get",getProduct);
 router.post("/getOneProduct",getOneProduct)
 router.post("/update",updateProduct);
 router.post("/delete",deleteProduct);
+router.post("/getCatProducts",getCatProducts);
+router.post("/getSubCatProducts",getSubCatProducts);
+
+
 
 router.post("/image/add",upload.array("img"),addImage);
 

@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 const connection = require("../utils/database");
 
 const offerSchema = new mongoose.Schema({
+     title: {
+          type: String,
+          required: true,
+     },
      type: {
           type: String,
           required: true,
@@ -15,7 +19,14 @@ const offerSchema = new mongoose.Schema({
           type: Number,
           required: true,
      },
-     expireAt: { type: Date, expires: 20 },
+     expireAt: {
+          type: String,
+          required: true,
+     },
+     expireDate: {
+          type: Date,
+          required: true,
+     },
 });
 
 const Offer = connection.model("Offer", offerSchema);

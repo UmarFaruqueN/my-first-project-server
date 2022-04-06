@@ -89,6 +89,12 @@ const productSchema = new mongoose.Schema({
      rating: {
           type: Array,
      },
+     Offer: {
+          type: Number,
+     },
+     OfferType: {
+          type: String,
+     },
 });
 
 const Product = connection.model("Product", productSchema);

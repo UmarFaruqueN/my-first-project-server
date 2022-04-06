@@ -29,7 +29,6 @@ router.post("/addAddress",addAddress)
 router.post("/getAddress",getAddress)
 router.post("/updateAddress",updateAddress)
 router.post("/deleteAddress",deleteAddress)
-
 router.post("/addOrder",addOrder)
 router.get("/getRazorpayKey",getRazorpayKey)
 router.post("/addOrderRazorpay",addOrderRazorpay)

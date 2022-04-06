@@ -91,6 +91,7 @@ module.exports = {
                if (updateCount) {
                     const userData = await User.findOne({ _id: ObjectId(user) });
                     const cartData = userData.cartProducts;
+                    
                     return res.status(200).json({ message: "  deccremented", cartData, userData });
                }
 
@@ -120,7 +121,19 @@ module.exports = {
                     console.log(deleteProduct + "deleted");
                     const userData = await User.findOne({ _id: ObjectId(user) });
                     const cartData = userData.cartProducts;
-                    return res.status(200).json({ message: " Product Removed From Cart", cartData, userData });
+                    const cartTotal = await User.aggregate([
+                         { $match: { _id: ObjectId(user) } },
+                         {$unwind:"$cartProducts" ,},{
+                              $project:{quantity:"$cartProducts.count",price:"$cartProducts.SellingPrice"},
+                         },{
+                              $group:{
+                                   _id:null,
+                                   total:{$sum:{$multiply:["$quantity","$price"]}}
+                              }
+                         }
+                        
+                    ]);
+                    return res.status(200).json({ message: " Product Removed From Cart", cartData, userData,cartTotal });
                }
           } catch (error) {
                console.log(error);
@@ -130,14 +143,22 @@ module.exports = {
      },
 
      totalCart: async (req, res) => {
-          console.log("started total cart");
-          console.log(req.body.user);
+        const {user}=req.body
           try {
                const cartTotal = await User.aggregate([
-                    { $match: { _id: ObjectId(req.data.user) } },
-                    { $group: { total: { $sum: { $multiply: ["$cartProducts.$.count" ,"$cartProducts.$.SellingPrice" ] } } } },
+                    { $match: { _id: ObjectId(user) } },
+                    {$unwind:"$cartProducts" ,},{
+                         $project:{quantity:"$cartProducts.count",price:"$cartProducts.SellingPrice"},
+                    },{
+                         $group:{
+                              _id:null,
+                              total:{$sum:{$multiply:["$quantity","$price"]}}
+                         }
+                    }
+                   
                ]);
-               console.log(cartTotal);
+               console.log(cartTotal+"divan");
+               res.status(200).json({cartTotal})
           } catch (error) {}
      },
 
