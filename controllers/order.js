@@ -6,7 +6,20 @@ module.exports = {
      getAllOrder: async (req, res) => {
           console.log("getALLOrder");
           try {
-               const orderData = await Order.find();
+               const orderData = await Order.aggregate([
+                    {
+                         $project: {
+                              _id: 1,
+                              name: 1,
+                              total: 1,
+                              paymentType: 1,
+                              orderStatus: 1,
+                              orderTime: 1,
+                              weekNumber: 1,
+                              statusTime: 1,
+                         },
+                    },
+               ]);
                if (orderData) {
                     const allOrders = orderData.reverse();
                     res.status(200).json({
@@ -70,7 +83,7 @@ module.exports = {
           }
      },
      getOrder: async (req, res) => {
-      const {user}= req.body;
+          const { user } = req.body;
 
           try {
                const allOrder = await Order.find({ userId: user });
@@ -108,11 +121,14 @@ module.exports = {
           }
      },
      updateOrder: async (req, res) => {
-          const { _id, status } = req.body;
+          const { _id, status, updateDate } = req.body;
 
           console.log(_id);
           try {
-               const updateOrder = await Order.findOneAndUpdate({ _id: ObjectId(_id) }, { $set: { orderStatus: status } });
+               const updateOrder = await Order.findOneAndUpdate(
+                    { _id: ObjectId(_id) },
+                    { $set: { orderStatus: status, statusTime: updateDate } }
+               );
                if (updateOrder) {
                     const orderData = await Order.find();
                     if (orderData) {
