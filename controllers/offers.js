@@ -20,12 +20,12 @@ module.exports = {
           console.log(maxPrice);
           try {
                if (data.title === "Category") {
-                    updateProduct = await Product.findOneAndUpdate(
+                    updateProduct = await Product.updateMany(
                          { Category: data.type, SellingPrice: { $gte: data.minimumPurchase } },
                          { $set: { Offer: data.offerAmount, OfferType: data.type } }
                     );
                } else if (data.title === "SubCategory") {
-                    updateProduct = await Product.findOneAndUpdate(
+                    updateProduct = await Product.updateMany(
                          { SubCategory: data.type, SellingPrice: { $gte: data.minimumPurchase } },
                          { $set: { Offer: data.offerAmount, OfferType: data.type } }
                     );
@@ -41,7 +41,7 @@ module.exports = {
                }
 
                const newOffer = await Offer.create(data);
-               if (newOffer) {
+               if (newOffer && updateProduct) {
                     const allOffer = await Offer.find();
                     if (allOffer) {
                          return res.status(200).json({ message: " Offer Created Successfully", allOffer });
@@ -58,16 +58,47 @@ module.exports = {
           const { _id, type } = req.body;
           try {
                const newOffer = await Offer.deleteOne({ _id: ObjectId(_id) });
-               const updateProduct = await Product.findOneAndUpdate(
-                    { OfferType: type },
-                    { $set: { Offer: 0, OfferType: "" } }
-               );
+               const updateProduct = await Product.updateMany({ OfferType: type }, { $set: { Offer: 0, OfferType: "" } });
                if (newOffer && updateProduct) {
                     const allOffer = await Offer.find();
                     if (allOffer) {
                          return res.status(200).json({ message: " Offer Deleted Successfully", allOffer });
                     }
                }
+          } catch (error) {
+               console.log("ADDAYI BUT ENTHAROO KOYAPPAM");
+               console.log(error);
+               console.log(error.message);
+               return res.status(500).json({ message: "something went wrong" });
+          }
+     },
+     applyCoupon: async (req, res) => {
+          console.log(req.body);
+          const { data, total } = req.body;
+
+          try {
+               const valid = ObjectId.isValid(data);
+               console.log(valid);
+               if (!valid) {
+                    return res.status(500).json({ message: "Check  Coupon Code Properly" });
+               }
+               const CouponCode = await Offer.findOne({ _id: ObjectId(data) });
+               console.log(CouponCode);
+               if (CouponCode) {
+                    let dateExpiry = Date.parse(CouponCode.expireAt);
+                    if (CouponCode.minimumPurchase > total) {
+                         const balance = total - CouponCode.minimumPurchase;
+                         return res
+                              .status(500)
+                              .json({ message: `Add  ${balance} Ruppes Products More To Avail This Offer ` });
+                    }
+                    // if (dateExpiry < dateStart) {
+                    //      return res.status(500).json({ message: "Offer Expired" });
+                    // }
+
+                    return res.status(200).json({ message: " Offer Applied", CouponCode });
+               }
+               return res.status(500).json({ message: "Invalid Coupon Code" });
           } catch (error) {
                console.log("ADDAYI BUT ENTHAROO KOYAPPAM");
                console.log(error);

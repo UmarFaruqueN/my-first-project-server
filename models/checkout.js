@@ -18,6 +18,10 @@ const checkoutSchema = new mongoose.Schema({
           type: Number,
           required: true,
      },
+
+
+
+
 });
 
 const Checkout = connection.model("Checkout", checkoutSchema);

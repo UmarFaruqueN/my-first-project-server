@@ -37,9 +37,10 @@ module.exports = {
      addOrder: async (req, res) => {
           console.log("started Add order");
           const data = req.body;
+          let removeCart = null;
 
           const details = {
-               userId: data.address._id,
+               userId: data.address.user,
                name: data.address.name,
                phone: data.address.phone,
                address: data.address.address,
@@ -58,39 +59,43 @@ module.exports = {
           };
 
           try {
-               const newOrder = await Order.create(details);
-               if (newOrder) {
-                    const allOrder = await Order.find({ userId: data.address._id });
-                    const orderData = allOrder.reverse();
-                    const removeCart = await User.findOneAndUpdate(
-                         { _id: ObjectId(data.address._id) },
+               if (data.type === "Cart") {
+                    removeCart = await User.findOneAndUpdate(
+                         { _id: ObjectId(data.address.user) },
                          {
-                              $unset: { cartProducts: [] },
-                         },
-                         { multi: true }
+                              $set: { cartProducts: [] },
+                         }
                     );
-
                     console.log(removeCart);
-                    if (orderData) {
-                         return res.status(200).json({ message: "Order Created..", orderData });
-                    }
-                    return res.status(500).json({ message: "No Order found in DataBase " });
                }
-               return res.status(500).json({ message: "Try Again After Some Thing " });
+               if (removeCart || data.type === "BuyNow") {
+                    const newOrder = await Order.create(details);
+                    if (newOrder) {
+                         const allOrder = await Order.find({ userId: data.address._id });
+                         const orderData = allOrder.reverse();
+                         if (orderData) {
+                              return res.status(200).json({ message: "Order Created..", orderData });
+                         }
+                         return res.status(500).json({ message: "No Order found in DataBase " });
+                    }
+                    return res.status(500).json({ message: "Try Again After Some Thing " });
+               }
           } catch (error) {
                console.log(error);
                return res.status(500).json({ message: "Something went wrong           " });
           }
      },
      getOrder: async (req, res) => {
+          console.log("started get Order");
           const { user } = req.body;
+          console.log(user);
 
           try {
                const allOrder = await Order.find({ userId: user });
+               console.log(allOrder);
                if (allOrder) {
-                    console.log(orderData[0]);
-
                     const orderData = await allOrder.reverse();
+                    console.log(orderData[0]);
                     return res.status(200).json({ message: "Order fetched", orderData });
                }
                return res.status(500).json({ message: "No Order found in DataBase " });
@@ -100,15 +105,15 @@ module.exports = {
           }
      },
      cancelOrder: async (req, res) => {
-          const user = req.body._id;
-          const date = req.body.orderDate;
+          const { _id, userId, orderDate } = req.body;
+
           try {
                const order = await Order.findOneAndUpdate(
-                    { _id: ObjectId(user) },
-                    { $set: { orderStatus: "User Cancelled", statusTime: date } }
+                    { _id: ObjectId(_id) },
+                    { $set: { orderStatus: "User Cancelled", statusTime: orderDate } }
                );
                if (order) {
-                    const allOrder = await Order.find({ userId: user });
+                    const allOrder = await Order.find({ userId: userId });
                     if (allOrder) {
                          console.log(allOrder[0]);
                          const orderData = allOrder.reverse();

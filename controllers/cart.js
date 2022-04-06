@@ -5,7 +5,9 @@ module.exports = {
      addToCart: async (req, res) => {
           console.log("started  cart controller");
           console.log(req.body);
-          const data = req.body;
+          const temp = req.body;
+          const Price=temp.SellingPrice-temp.Offer
+          const data ={...temp,Price}
           try {
                const product = await User.findOne({
                     _id: ObjectId(data.user),
@@ -148,7 +150,7 @@ module.exports = {
                const cartTotal = await User.aggregate([
                     { $match: { _id: ObjectId(user) } },
                     {$unwind:"$cartProducts" ,},{
-                         $project:{quantity:"$cartProducts.count",price:"$cartProducts.SellingPrice"},
+                         $project:{quantity:"$cartProducts.count",price:"$cartProducts.Price"},
                     },{
                          $group:{
                               _id:null,

@@ -7,6 +7,8 @@ const {addWishlist,getWishlist,deleWishlist} = require("../controllers/wishlist"
 const { addOrder, getOrder,cancelOrder, } = require('../controllers/order');
 const {addOrderRazorpay,getRazorpayKey} = require('../controllers/payment');
 const {addAddress,updateAddress,deleteAddress,getAddress}= require("../controllers/address")
+const {checkout} = require("../controllers/checkout")
+const {applyCoupon} = require("../controllers/offers")
 
 //middleware
 
@@ -22,6 +24,7 @@ router.post("/incCart",incCart)
 router.post("/decCart",decCart)
 router.post("/deleCart",deleCart)
 router.post("/totalCart",totalCart)
+router.post("/checkout",checkout)
 router.post("/addWishlist",addWishlist)
 router.post("/getWishlist",getWishlist)
 router.post("/deleWishlist",deleWishlist)
@@ -32,10 +35,10 @@ router.post("/deleteAddress",deleteAddress)
 router.post("/addOrder",addOrder)
 router.get("/getRazorpayKey",getRazorpayKey)
 router.post("/addOrderRazorpay",addOrderRazorpay)
+router.post("/applyCoupon",applyCoupon)
 router.post("/getOrder",getOrder)
 router.post("/cancelOrder",cancelOrder)
 router.post("/getUser",getUser)
-
 router.post("/editName",editName)
 router.post("/editPhone",editPhone)
 router.post("/editEmail",editEmail)
