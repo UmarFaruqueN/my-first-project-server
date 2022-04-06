@@ -209,5 +209,28 @@ module.exports = {
           }
      },
 
-     editPassword: async (req, res) => {},
+     editPassword: async (req, res) => {
+          console.log(req.body);
+          const { update, user, checkPass } = req.body;
+          console.log();
+          try {
+               const userData = await User.findOne({ _id: ObjectId(user) });
+               if (checkPass && userData) {
+                    const result = await bcrypt.compare(update, userData.password);
+                    if (result) return res.status(200).json({ message: "Password Correct" });
+                    return res.status(500).json({ message: "Password Incorrect" });
+               }
+               const result = await bcrypt.compare(update.password, userData.password);
+               if (result) {
+                    return res.status(500).json({ message: "Same As Old Password" });
+               }
+               const password = await bcrypt.hash(update.password, 10);
+               const updated = await User.findOneAndUpdate({ _id: ObjectId(user) }, { $set: { password: password } });
+               if (updated) return res.status(200).json({ message: "Password Updated", userData });
+          } catch (error) {
+               console.log(error);
+               console.log(error.message);
+               return res.status(500).json({ message: "something went wrong" });
+          }
+     },
 };
