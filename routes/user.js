@@ -8,7 +8,7 @@ const { addOrder, getOrder,cancelOrder, } = require('../controllers/order');
 const {addOrderRazorpay,getRazorpayKey} = require('../controllers/payment');
 const {addAddress,updateAddress,deleteAddress,getAddress}= require("../controllers/address")
 const {checkout} = require("../controllers/checkout")
-const {applyCoupon} = require("../controllers/offers")
+const {applyCoupon,getCoupon} = require("../controllers/offers")
 
 //middleware
 
@@ -36,6 +36,7 @@ router.post("/addOrder",addOrder)
 router.get("/getRazorpayKey",getRazorpayKey)
 router.post("/addOrderRazorpay",addOrderRazorpay)
 router.post("/applyCoupon",applyCoupon)
+router.get("/getCoupon",getCoupon)
 router.post("/getOrder",getOrder)
 router.post("/cancelOrder",cancelOrder)
 router.post("/getUser",getUser)
@@ -43,6 +44,7 @@ router.post("/editName",editName)
 router.post("/editPhone",editPhone)
 router.post("/editEmail",editEmail)
 router.post("/editPassword",editPassword)
+
 
 
 

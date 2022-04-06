@@ -3,6 +3,7 @@ const Product = require("../models/product");
 const ObjectId = require("mongodb").ObjectId;
 module.exports = {
      addOffer: async (req, res) => {
+          console.log(req.body);
           const today = new Date();
           const tomorrow = new Date();
           tomorrow.setDate(today.getDate() + 2);
@@ -106,4 +107,19 @@ module.exports = {
                return res.status(500).json({ message: "something went wrong" });
           }
      },
+     getCoupon:async(req,res)=>{
+          try {
+               const couponData = await Offer.find({type:"Coupon Code"})
+               if (couponData){
+                    return res.status(200).json({ message: " coupon fetched", couponData });
+
+               }
+               return res.status(500).json({ message: "No Coupons found" });
+          } catch (error) {;
+               console.log(error);
+               console.log(error.message);
+               return res.status(500).json({ message: "something went wrong" });
+          }
+
+     }
 };
