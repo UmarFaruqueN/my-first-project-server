@@ -31,7 +31,7 @@ module.exports = {
      },
      getWishlist: async (req, res) => {
           console.log("started getwish");
-          const user = req.body._id;
+          const { user } = req.body;
           try {
                const userData = await User.findOne({ _id: ObjectId(user) });
                const wishlistData = userData.wishlist;
@@ -43,16 +43,14 @@ module.exports = {
           }
      },
      deleWishlist: async (req, res) => {
-          const user = req.body._id;
-          const product = req.body.productId;
-          console.log(user, product);
+          const { user, productId } = req.body;
           try {
                const deleteProduct = await User.findOneAndUpdate(
                     {
                          _id: ObjectId(user),
                     },
                     {
-                         $pull: { wishlist: { _id: product } },
+                         $pull: { wishlist: { _id: productId } },
                     }
                );
 

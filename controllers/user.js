@@ -143,7 +143,17 @@ module.exports = {
           const { update, user } = req.body;
           try {
                if (update === null) {
-                    return res.status(500).json({ message: "Same As Old Phone" });
+                    return res.status(500).json({ message: "Change Number" });
+               }
+               if (update.length > 10) {
+                    return res.status(500).json({ message: "Maximum 10 Numbers Allowed " });
+               }
+               if (update.length < 10) {
+                    return res.status(500).json({ message: "Minimum 10 Numbers Neede " });
+               }
+               const checkPhone = await User.findOne({ phone: update });
+               if (checkPhone) {
+                    return res.status(500).json({ message: "This Phone is Already Registered " });
                }
 
                const editName = await User.findOneAndUpdate(
@@ -170,11 +180,15 @@ module.exports = {
           const { update, user } = req.body;
           try {
                if (update === null) {
-                    return res.status(500).json({ message: "Same As Old Email" });
+                    return res.status(500).json({ message: "Change Email" });
                }
 
                const validateEmail = await emailValidation.validate(update);
                if (validateEmail) {
+                    const checkEmail = await User.findOne({ email: update });
+                    if (checkEmail) {
+                         return res.status(500).json({ message: "This Email is Already Registered " });
+                    }
                     const editName = await User.findOneAndUpdate(
                          { _id: ObjectId(user) },
                          {
