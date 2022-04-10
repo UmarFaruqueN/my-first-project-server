@@ -233,7 +233,4 @@ module.exports = {
                return res.status(500).json({ message: "something went wrong" });
           }
      },
-     getS:(req,res)=>{
-          res.status(200).json({message:"tedt3"})
-     }
 };

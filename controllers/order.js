@@ -1,6 +1,7 @@
 const { ObjectId } = require("mongodb");
 const Order = require("../models/order");
 const User = require("../models/user");
+const Product = require("../models/product");
 
 module.exports = {
      getAllOrder: async (req, res) => {
@@ -17,7 +18,7 @@ module.exports = {
                               orderTime: 1,
                               weekNumber: 1,
                               statusTime: 1,
-                              month:1
+                              month: 1,
                          },
                     },
                ]);
@@ -155,16 +156,47 @@ module.exports = {
      getSales: async (req, res) => {
           console.log("getSales");
           try {
+               const Users = await User.find();
+               const Products = await Product.find();
                const Orders = await Order.find({ orderStatus: "User Ordered" });
                const Sales = await Order.find({ orderStatus: "Item Delivered" });
                const Shipped = await Order.find({ orderStatus: "Item Shipped" });
                const Cancelled = await Order.find({ orderStatus: "User Cancelled" });
+               const Data = [
+                    {
+                         name: "Users",
+                         count: Users.length,
+                    },
+                    {
+                         name: "Products",
+                         count: Products.length,
+                    },
+                    {
+                         name: "Orders",
+                         count: Orders.length,
+                    },
+                    {
+                         name: "Sales",
+                         count: Orders.length,
+                    },
+                    {
+                         name: "Shipped",
+                         count: Shipped.length,
+                    },
+                    {
+                         name: "Cancelled",
+                         count: Cancelled.length,
+                    },
+               ];
+
+               console.log(Data);
                res.status(200).json({
                     message: " Data Fetched Successfully",
                     Orders,
                     Sales,
                     Shipped,
                     Cancelled,
+                    Data,
                });
           } catch (error) {
                console.log(error);
