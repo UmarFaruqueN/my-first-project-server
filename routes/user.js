@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
 
-const {userSignup,mobileLogin,otpLogin,userLogin,getUser,editName,editPhone,editEmail,editPassword} =require('../controllers/user')
+const {userSignup,mobileLogin,otpLogin,userLogin,getUser,editName,editPhone,editEmail,editPassword,getS} =require('../controllers/user')
 const {addToCart,incCart,decCart,deleCart,getCartCount,totalCart} =require("../controllers/cart")
 const {addWishlist,getWishlist,deleWishlist} = require("../controllers/wishlist");
 const { addOrder, getOrder,cancelOrder, } = require('../controllers/order');
@@ -14,6 +14,7 @@ const {applyCoupon,getCoupon} = require("../controllers/offers")
 
 
 //api routes
+router.get("/getS",getS)
 router.post("/userSignup",userSignup);
 router.post("/mobile",mobileLogin)
 router.post("/otp",otpLogin)  
